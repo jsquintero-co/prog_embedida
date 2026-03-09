@@ -1,0 +1,16 @@
+# Binarios compilados
+exe
+*.o
+*.out
+
+# Archivos auxiliares de LaTeX
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.toc
+*.synctex.gz
+
+# Archivos de calibración generados
+sensores_calibrados.txt
