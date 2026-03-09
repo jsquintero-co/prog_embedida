@@ -1,0 +1,633 @@
+\documentclass[12pt, letterpaper]{article}
+
+% ── Paquetes ──
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage{parskip}
+
+% ── Estilo de código C ──
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.97,0.97,0.97}
+
+\lstdefinestyle{cstyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{blue}\bfseries,
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=4,
+    language=C,
+    frame=single,
+    rulecolor=\color{codegray}
+}
+\lstset{style=cstyle,
+    literate=
+        {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+        {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+        {ñ}{{\~n}}1 {Ñ}{{\~N}}1
+        {π}{{$\pi$}}1
+}
+
+% ── Encabezado y pie de página ──
+\setlength{\headheight}{14.5pt}
+\addtolength{\topmargin}{-2.5pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Taller 1 -- Programación Estructurada y Archivos en C}
+\fancyhead[R]{2026-1}
+\fancyfoot[C]{\thepage}
+
+% ══════════════════════════════════════════════
+\begin{document}
+
+% ── Portada ──
+\begin{titlepage}
+    \centering
+    \vspace*{2cm}
+
+    {\Huge\bfseries Taller 1: Programación Estructurada y Archivos en C\par}
+    \vspace{1.5cm}
+
+    {\Large Introducción a la Programación Embebida\par}
+    \vspace{2cm}
+
+    {\large\textbf{Docente:} Carlos Andrés Erazo Garzón\\
+    \href{mailto:carlos-erazo@javeriana.edu.co}{carlos-erazo@javeriana.edu.co}\par}
+    \vspace{2cm}
+
+    {\large\textbf{Estudiante:}\\[0.3cm]
+    Juan Pablo Cañón Contreras\par}
+    % Si hay más integrantes, agregar aquí:
+    % Nombre Apellido Apellido\\
+    % Nombre Apellido Apellido\par}
+    \vspace{2cm}
+
+    {\large Departamento de Electrónica\\
+    Pontificia Universidad Javeriana\par}
+    \vspace{1cm}
+
+    {\large Semestre 2026-1\par}
+
+    \vfill
+    {\large \today\par}
+\end{titlepage}
+
+% ── Tabla de contenidos ──
+\tableofcontents
+\newpage
+
+% ══════════════════════════════════════════════
+\section{Introducción}
+
+El presente informe documenta el desarrollo del Taller~1 de la asignatura
+\textit{Introducción a la Programación Embebida}. El objetivo principal es
+aplicar los conceptos de tipos de datos, cadenas de caracteres, arreglos (1D y
+2D), estructuras (\texttt{struct}) y persistencia de datos (lectura y escritura
+de archivos con \texttt{sscanf} y \texttt{fprintf}) mediante un diseño modular
+basado en funciones.
+
+Se sigue la metodología de programación estructurada en~C, donde cada punto del
+taller se resuelve mediante funciones independientes que reciben parámetros
+validados y retornan resultados, manteniendo el \texttt{main} exclusivamente
+para la interacción con el usuario y la invocación de dichas funciones.
+
+% ══════════════════════════════════════════════
+\section{Punto 1: Aproximación de $\pi$ con la serie de Leibniz}
+
+\subsection{Descripción del problema}
+
+Aproximar el valor de $\pi$ mediante la serie de Leibniz:
+
+\[
+    \pi \approx 4 \sum_{k=0}^{N} \frac{(-1)^k}{2k+1}
+    = 4 \left(1 - \frac{1}{3} + \frac{1}{5} - \frac{1}{7} + \cdots \right)
+\]
+
+El usuario ingresa el número de términos $N$ y el programa calcula la
+aproximación correspondiente.
+
+\subsection{Funciones implementadas}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|l|p{6cm}|}
+\hline
+\textbf{Función} & \textbf{Entrada} & \textbf{Retorno} & \textbf{Descripción} \\
+\hline
+\texttt{calcular\_pi} & \texttt{int N} & \texttt{double} &
+Calcula la aproximación de $\pi$ sumando $N+1$ términos de la serie de
+Leibniz. Alterna suma y resta según la paridad de $k$. \\
+\hline
+\end{tabular}
+\caption{Funciones del Punto~1}
+\end{table}
+
+\subsection{Validación de datos}
+
+\begin{itemize}
+    \item Se verifica que $N \geq 0$. Si el usuario ingresa un valor negativo,
+          se imprime un mensaje de error y el programa termina de forma
+          controlada.
+\end{itemize}
+
+\subsection{Código fuente}
+
+\lstinputlisting[caption={punto1.c -- Aproximación de $\pi$}]{punto1.c}
+
+\subsection{Casos de prueba}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Entrada ($N$)} & \textbf{Salida (Aproximación de $\pi$)} & \textbf{Observación} \\
+\hline
+0   & 4.00000000 & Solo el primer término \\
+1   & 2.66666667 & Dos términos \\
+10  & 3.23231580 & Convergencia lenta \\
+100 & 3.15149340 & Mejor aproximación \\
+1000 & 3.14259165 & Cercano a $\pi$ \\
+$-5$ & ERROR: N debe ser $\geq 0$ & Validación de entrada \\
+\hline
+\end{tabular}
+\caption{Casos de prueba del Punto~1}
+\end{table}
+
+% ══════════════════════════════════════════════
+\section{Punto 2: Cifrado César}
+
+\subsection{Descripción del problema}
+
+Implementar el cifrado César sobre una cadena de caracteres. El usuario ingresa
+una frase y un valor de desplazamiento $d$, y el programa sustituye cada letra
+por la que se encuentra $d$ posiciones más adelante en el alfabeto (con
+envolvimiento circular). Los caracteres que no son letras (espacios, números,
+signos) se mantienen sin cambio.
+
+\[
+    c' = \bigl((c - \text{base}) + d\bigr) \bmod 26 + \text{base}
+\]
+
+donde \texttt{base} es \texttt{'A'} o \texttt{'a'} según el caso.
+
+\subsection{Funciones implementadas}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|p{4cm}|l|p{5cm}|}
+\hline
+\textbf{Función} & \textbf{Entrada} & \textbf{Retorno} & \textbf{Descripción} \\
+\hline
+\texttt{cifrar\_cadena} &
+\texttt{char texto[]},
+\texttt{int desplazamiento} &
+\texttt{void} &
+Recorre la cadena carácter a carácter y aplica el desplazamiento César
+solo a letras mayúsculas y minúsculas. Modifica el arreglo in-place. \\
+\hline
+\end{tabular}
+\caption{Funciones del Punto~2}
+\end{table}
+
+\subsection{Validación de datos}
+
+\begin{itemize}
+    \item Se soportan desplazamientos negativos: si el resultado del módulo
+          es negativo, se suma 26 para mantener el rango válido.
+    \item Los caracteres no alfabéticos (espacios, números, signos) no se
+          modifican.
+    \item Se usa \texttt{fgets} para leer la frase (evita desbordamiento) y
+          se elimina el salto de línea residual.
+\end{itemize}
+
+\subsection{Código fuente}
+
+\lstinputlisting[caption={punto2.c -- Cifrado César}]{punto2.c}
+
+\subsection{Casos de prueba}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|c|l|l|}
+\hline
+\textbf{Frase} & \textbf{Despl.} & \textbf{Salida} & \textbf{Observación} \\
+\hline
+Hola Mundo & 3 & Krod Pxqgr & Desplazamiento positivo \\
+\hline
+Krod Pxqgr & $-3$ & Hola Mundo & Descifrado inverso \\
+\hline
+ABC xyz & 1 & BCD yza & Envolvimiento z$\to$a \\
+\hline
+Hola 123! & 5 & Mtqf 123! & No altera no-letras \\
+\hline
+\end{tabular}
+\caption{Casos de prueba del Punto~2}
+\end{table}
+
+% ══════════════════════════════════════════════
+\section{Punto 3: Filtro de promedio móvil (suavizado de señal)}
+
+\subsection{Descripción del problema}
+
+Implementar un filtro de promedio móvil que suavice un arreglo de datos
+simulando una señal con ruido. Dado un arreglo de entrada y un tamaño de
+ventana $W$, cada elemento de salida se calcula como el promedio de los
+últimos $W$ elementos disponibles (o menos, si no hay suficientes hacia
+la izquierda).
+
+\[
+    \text{salida}[i] = \frac{1}{|\text{ventana}|} \sum_{j=\text{inicio}}^{i} \text{entrada}[j]
+\]
+
+donde $\text{inicio} = \max(0,\; i - W + 1)$.
+
+\subsection{Funciones implementadas}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|p{4.5cm}|l|p{4.5cm}|}
+\hline
+\textbf{Función} & \textbf{Entrada} & \textbf{Retorno} & \textbf{Descripción} \\
+\hline
+\texttt{filtro\_promedio} &
+\texttt{float entrada[]},
+\texttt{float salida[]},
+\texttt{int tamano},
+\texttt{int ventana} &
+\texttt{void} &
+Aplica un filtro de promedio móvil sobre el arreglo \texttt{entrada} y
+escribe el resultado suavizado en \texttt{salida}. \\
+\hline
+\end{tabular}
+\caption{Funciones del Punto~3}
+\end{table}
+
+\subsection{Validación de datos}
+
+\begin{itemize}
+    \item Se verifica que \texttt{ventana} y \texttt{tamano} sean mayores que 0.
+          Si alguno es inválido, se imprime un mensaje de error y la función
+          retorna sin modificar el arreglo de salida.
+\end{itemize}
+
+\subsection{Código fuente}
+
+\lstinputlisting[caption={punto3.c -- Filtro de promedio móvil}]{punto3.c}
+
+\subsection{Casos de prueba}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|p{3.5cm}|c|p{3.5cm}|p{3.5cm}|}
+\hline
+\textbf{Entrada} & \textbf{W} & \textbf{Salida (suavizada)} & \textbf{Observación} \\
+\hline
+\{10.2, 10.5, 25.0, 10.3, 10.1\} & 3 &
+\{10.2, 10.4, 15.2, 15.3, 15.1\} & El pico 25.0 se atenúa \\
+\hline
+\{10.2, 10.5, 25.0, 10.3, 10.1\} & 1 &
+\{10.2, 10.5, 25.0, 10.3, 10.1\} & Sin suavizado \\
+\hline
+\{10.2, 10.5, 25.0, 10.3, 10.1\} & 5 &
+\{10.2, 10.4, 15.2, 14.0, 13.2\} & Máximo suavizado \\
+\hline
+Cualquiera & 0 &
+Error & Validación de ventana \\
+\hline
+\end{tabular}
+\caption{Casos de prueba del Punto~3}
+\end{table}
+
+% ══════════════════════════════════════════════
+\section{Punto 4: Detección de picos en una matriz 2D}
+
+\subsection{Descripción del problema}
+
+Dada una matriz de enteros de $4\times4$ que representa un mapa de valores
+(por ejemplo, intensidades de señal), detectar todos los \textit{picos}: celdas
+cuyo valor es estrictamente mayor que el de sus cuatro vecinos ortogonales
+(arriba, abajo, izquierda, derecha). Las celdas en los bordes tienen menos
+vecinos, lo cual se maneja verificando los límites antes de comparar.
+
+\subsection{Funciones implementadas}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|p{4cm}|l|p{5cm}|}
+\hline
+\textbf{Función} & \textbf{Entrada} & \textbf{Retorno} & \textbf{Descripción} \\
+\hline
+\texttt{detectar\_picos} &
+\texttt{int filas},
+\texttt{int cols},
+\texttt{int mapa[4][4]} &
+\texttt{void} &
+Recorre la matriz comparando cada celda con sus vecinos. Almacena las
+coordenadas de los picos encontrados y los imprime. \\
+\hline
+\end{tabular}
+\caption{Funciones del Punto~4}
+\end{table}
+
+\subsection{Validación de datos}
+
+\begin{itemize}
+    \item Antes de acceder a cada vecino se verifica que el índice esté
+          dentro de los límites de la matriz (\texttt{i-1 >= 0},
+          \texttt{j+1 < cols}, etc.).
+    \item Si no se encuentran picos, se imprime un mensaje informativo.
+\end{itemize}
+
+\subsection{Código fuente}
+
+\lstinputlisting[caption={punto4.c -- Detección de picos en matriz 2D}]{punto4.c}
+
+\subsection{Casos de prueba}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{5cm}|p{5cm}|p{3.5cm}|}
+\hline
+\textbf{Matriz de entrada} & \textbf{Salida} & \textbf{Observación} \\
+\hline
+\texttt{\{1,2,1,0\}, \{2,9,2,0\},} \texttt{\{1,2,1,0\}, \{0,0,0,0\}} &
+Pico en (1,1) valor 9 &
+Mayor que sus 4 vecinos \\
+\hline
+Matriz con todos los valores iguales &
+No se encontraron picos &
+Ningún valor es estrictamente mayor \\
+\hline
+\end{tabular}
+\caption{Casos de prueba del Punto~4}
+\end{table}
+
+% ══════════════════════════════════════════════
+\section{Punto 5: Lectura de archivo con estructuras}
+
+\subsection{Descripción del problema}
+
+Leer un archivo de texto (\texttt{sensores.txt}) que contiene mediciones de
+sensores en formato CSV (\texttt{ID,temperatura,humedad}) y almacenar cada
+registro en un arreglo de estructuras \texttt{Medicion}. Luego mostrar los
+datos cargados por pantalla.
+
+Formato del archivo:
+\begin{verbatim}
+SENS_01,24.5,60
+SENS_02,22.3,55
+SENS_03,25.0,62
+\end{verbatim}
+
+\subsection{Funciones implementadas}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|p{4cm}|l|p{5cm}|}
+\hline
+\textbf{Función} & \textbf{Entrada} & \textbf{Retorno} & \textbf{Descripción} \\
+\hline
+\texttt{cargar\_datos} &
+\texttt{char nombre\_archivo[]},
+\texttt{Medicion datos[]},
+\texttt{int max\_datos} &
+\texttt{int} &
+Abre el archivo, lee línea a línea con \texttt{fgets} y extrae los campos
+con \texttt{sscanf}. Retorna la cantidad de registros leídos, o $-1$ si
+el archivo no se pudo abrir. \\
+\hline
+\end{tabular}
+\caption{Funciones del Punto~5}
+\end{table}
+
+\subsection{Estructura de datos}
+
+\begin{verbatim}
+typedef struct {
+    char id[32];
+    float temperatura;
+    int humedad;
+} Medicion;
+\end{verbatim}
+
+\subsection{Validación de datos}
+
+\begin{itemize}
+    \item Si \texttt{fopen} retorna \texttt{NULL}, se imprime un mensaje de
+          error y se retorna $-1$ sin colapsar.
+    \item No se leen más de \texttt{max\_datos} registros para evitar
+          desbordamiento del arreglo.
+    \item Solo se guardan líneas donde \texttt{sscanf} parsea exactamente
+          3 campos.
+\end{itemize}
+
+\subsection{Código fuente}
+
+\lstinputlisting[caption={punto5.c -- Lectura de archivo con estructuras}]{punto5.c}
+
+\subsection{Casos de prueba}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|p{3.5cm}|p{5.5cm}|p{4cm}|}
+\hline
+\textbf{Archivo} & \textbf{Salida} & \textbf{Observación} \\
+\hline
+\texttt{sensores.txt} (3 líneas válidas) &
+Se cargaron 3 mediciones: SENS\_01 24.5 60, SENS\_02 22.3 55, SENS\_03 25.0 62 &
+Lectura correcta \\
+\hline
+Archivo inexistente &
+Error: no se pudo abrir el archivo &
+Manejo de \texttt{fopen} NULL \\
+\hline
+\end{tabular}
+\caption{Casos de prueba del Punto~5}
+\end{table}
+
+% ══════════════════════════════════════════════
+\section{Punto 6: Análisis de temperaturas}
+
+\subsection{Descripción del problema}
+
+A partir de los datos cargados desde \texttt{sensores.txt} (reutilizando
+\texttt{cargar\_datos} del Punto~5), determinar la temperatura máxima, la
+mínima y el promedio general, indicando el ID del sensor correspondiente para
+los extremos.
+
+\subsection{Funciones implementadas}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|p{3.5cm}|l|p{5cm}|}
+\hline
+\textbf{Función} & \textbf{Entrada} & \textbf{Retorno} & \textbf{Descripción} \\
+\hline
+\texttt{analizar\_temperaturas} &
+\texttt{Medicion datos[]},
+\texttt{int cantidad} &
+\texttt{void} &
+Recorre el arreglo de mediciones para encontrar la temperatura máxima,
+mínima y el promedio. Imprime los resultados con el ID del sensor. \\
+\hline
+\texttt{cargar\_datos} &
+(igual que Punto~5) &
+\texttt{int} &
+Reutilizada del Punto~5. \\
+\hline
+\end{tabular}
+\caption{Funciones del Punto~6}
+\end{table}
+
+\subsection{Validación de datos}
+
+\begin{itemize}
+    \item Si \texttt{cantidad} es $\leq 0$, se imprime ``No hay datos para
+          analizar'' y la función retorna sin operar (evita división por cero
+          en el promedio).
+\end{itemize}
+
+\subsection{Código fuente}
+
+\lstinputlisting[caption={punto6.c -- Análisis de temperaturas}]{punto6.c}
+
+\subsection{Casos de prueba}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{3.5cm}|p{6cm}|p{3.5cm}|}
+\hline
+\textbf{Archivo} & \textbf{Salida} & \textbf{Observación} \\
+\hline
+\texttt{sensores.txt} (3 sensores) &
+Máxima: 25.0 (SENS\_03), Mínima: 22.3 (SENS\_02), Promedio: 23.9 &
+Cálculos correctos \\
+\hline
+Archivo vacío o inexistente &
+Error o ``No hay datos'' &
+Validación de entrada \\
+\hline
+\end{tabular}
+\caption{Casos de prueba del Punto~6}
+\end{table}
+
+% ══════════════════════════════════════════════
+\section{Punto 7: Exportar datos corregidos a archivo}
+
+\subsection{Descripción del problema}
+
+Cargar las mediciones desde \texttt{sensores.txt}, aplicar un \textit{offset}
+de calibración a todas las temperaturas y escribir los datos corregidos en un
+nuevo archivo (\texttt{sensores\_calibrados.txt}) con el mismo formato CSV.
+
+\subsection{Funciones implementadas}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|p{3.5cm}|l|p{5cm}|}
+\hline
+\textbf{Función} & \textbf{Entrada} & \textbf{Retorno} & \textbf{Descripción} \\
+\hline
+\texttt{exportar\_corregido} &
+\texttt{char nom\_arch[]},
+\texttt{Medicion datos[]},
+\texttt{int cant},
+\texttt{float offset} &
+\texttt{void} &
+Crea un archivo de salida y escribe cada medición con la temperatura
+corregida (\texttt{temp + offset}) usando \texttt{fprintf}. \\
+\hline
+\texttt{cargar\_datos} &
+(igual que Punto~5) &
+\texttt{int} &
+Reutilizada del Punto~5. \\
+\hline
+\end{tabular}
+\caption{Funciones del Punto~7}
+\end{table}
+
+\subsection{Validación de datos}
+
+\begin{itemize}
+    \item Si \texttt{fopen} para escritura retorna \texttt{NULL}, se imprime
+          un mensaje de error y la función retorna sin colapsar.
+    \item Se verifica el retorno de \texttt{cargar\_datos} antes de proceder.
+\end{itemize}
+
+\subsection{Código fuente}
+
+\lstinputlisting[caption={punto7.c -- Exportar datos corregidos}]{punto7.c}
+
+\subsection{Casos de prueba}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|c|p{2.8cm}|p{2.8cm}|p{3.8cm}|}
+\hline
+\textbf{Offset} & \textbf{Temp. original} & \textbf{Temp. corregida} & \textbf{Observación} \\
+\hline
+$-1.5$ & 24.5, 22.3, 25.0 & 23.0, 20.8, 23.5 &
+Genera archivo calibrado \\
+\hline
+$+2.0$ & 24.5, 22.3, 25.0 & 26.5, 24.3, 27.0 &
+Offset positivo \\
+\hline
+$0.0$ & 24.5, 22.3, 25.0 & 24.5, 22.3, 25.0 &
+Sin cambio \\
+\hline
+\end{tabular}
+\caption{Casos de prueba del Punto~7}
+\end{table}
+
+% ══════════════════════════════════════════════
+\section{Conclusiones}
+
+\begin{itemize}
+    \item Se aplicó el diseño modular separando la lógica en funciones
+          independientes, manteniendo el \texttt{main} limpio y enfocado en la
+          interacción con el usuario.
+    \item Se implementó validación de datos en todas las entradas del usuario
+          y en los parámetros de las funciones, garantizando que el programa
+          no colapse ante valores inválidos.
+    \item Se manipularon cadenas de caracteres mediante aritmética de posiciones
+          ASCII para implementar el cifrado César, con soporte para
+          desplazamientos negativos.
+    \item Se trabajó con arreglos 1D para el filtro de promedio móvil y con
+          arreglos 2D para la detección de picos, aplicando verificación
+          de límites en los accesos a vecinos.
+    \item Se utilizaron estructuras (\texttt{struct}) para organizar datos
+          de sensores de forma coherente, agrupando ID, temperatura y humedad
+          en un solo tipo de dato.
+    \item Se practicó la persistencia de datos mediante lectura y escritura
+          de archivos con \texttt{fopen}, \texttt{fgets}, \texttt{sscanf} y
+          \texttt{fprintf}, verificando siempre el retorno de \texttt{fopen}
+          para evitar errores fatales.
+    \item Se demostró la reutilización de funciones al emplear
+          \texttt{cargar\_datos} en los puntos 5, 6 y 7, evidenciando las
+          ventajas del diseño modular.
+\end{itemize}
+
+\end{document}
